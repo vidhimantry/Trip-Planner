@@ -64,6 +64,54 @@
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
+## System Architecture
+**1. System Integration Flow**
+```mermaid
+graph TD
+    subgraph Client_Side
+        A[React Frontend] --> B[Framer Motion / GSAP]
+        A --> C[Chart.js / Recharts]
+    end
+    
+    subgraph Server_Side
+        D[Node/Express API]
+        E[Socket.io]
+    end
+
+    subgraph External_Services
+        F[Google Gemini 2.0 Flash]
+        G[(MongoDB / Mongoose)]
+        H[Firebase/Passport Auth]
+    end
+
+    A <-->|REST API| D
+    A <-->|WebSockets| E
+    D <--> G
+    D <--> F
+    D <--> H
+```
+
+**2. AI Itinerary Generation Sequence**
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant FE as React UI
+    participant BE as Express Server
+    participant AI as Gemini AI
+    participant PDF as PDF Generator
+
+    U->>FE: Input Travel Preferences
+    FE->>BE: POST /api/generate-itinerary
+    BE->>AI: Process Prompt (Gemini 2.0 Flash)
+    AI-->>BE: Return Structured Itinerary
+    BE->>PDF: Format Data to PDF
+    PDF-->>FE: Send Download Link
+    FE-->>U: Download Itinerary PDF
+```
+
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+
+
 ## 📂 Project Structure
 
 ```plaintext
@@ -224,4 +272,5 @@ This project is licensed under the MIT License - see the [`License`](./License.m
 
 
 > **"Travel is the only thing you buy that makes you richer." Ready to show off your coding achievements? Get started with trip-planner today! 🚀**
+
 
