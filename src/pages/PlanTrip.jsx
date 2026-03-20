@@ -35,13 +35,13 @@ export default function PlanTrip({ searchQuery = "" }) {
   // Collaboration states
   const [sharedPlanId, setSharedPlanId] = useState("");
   const [isCollaborating, setIsCollaborating] = useState(false);
-  const [collabStatus, setCollabStatus] = useState("idle");
+  // const [collabStatus, setCollabStatus] = useState("idle");
   const unsubscribeRef = useRef({});
   const saveTimeoutRef = useRef(null);
   const presenceIntervalRef = useRef(null);
   const [uid, setUid] = useState(null);
   const [plansList, setPlansList] = useState([]);
-  const [planTitle, setPlanTitle] = useState("");
+  // const [planTitle, setPlanTitle] = useState("");
   const [locks, setLocks] = useState({});
   const [presence, setPresence] = useState({});
   const text = "Plan Your Dream Gateway";
@@ -133,29 +133,29 @@ export default function PlanTrip({ searchQuery = "" }) {
   }, []);
 
   // Create a new shared plan in Firestore
-  const createSharedPlan = async () => {
-    try {
-      const plansCol = collection(db, "sharedPlans");
-      // Use a random id by creating a doc ref without id then reading its id
-      const newDocRef = doc(plansCol);
-      const id = newDocRef.id;
-      await setDoc(newDocRef, {
-        title: planTitle || "Untitled Plan",
-        owner: uid || null,
-        allowedEditors: uid ? [uid] : [],
-        tours: arrayToMap(tour),
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-      setSharedPlanId(id);
-      setIsCollaborating(true);
-      setCollabStatus("created");
-      subscribeToPlan(id);
-    } catch (err) {
-      console.error("createSharedPlan error:", err);
-      setCollabStatus("error");
-    }
-  };
+  // const createSharedPlan = async () => {
+  //   try {
+  //     const plansCol = collection(db, "sharedPlans");
+  //     // Use a random id by creating a doc ref without id then reading its id
+  //     const newDocRef = doc(plansCol);
+  //     const id = newDocRef.id;
+  //     await setDoc(newDocRef, {
+  //       title: planTitle || "Untitled Plan",
+  //       owner: uid || null,
+  //       allowedEditors: uid ? [uid] : [],
+  //       tours: arrayToMap(tour),
+  //       createdAt: serverTimestamp(),
+  //       updatedAt: serverTimestamp(),
+  //     });
+  //     setSharedPlanId(id);
+  //     setIsCollaborating(true);
+  //     setCollabStatus("created");
+  //     subscribeToPlan(id);
+  //   } catch (err) {
+  //     console.error("createSharedPlan error:", err);
+  //     setCollabStatus("error");
+  //   }
+  // };
 
   // Join an existing shared plan by id
   const joinSharedPlan = async (id) => {
@@ -164,16 +164,16 @@ export default function PlanTrip({ searchQuery = "" }) {
       const planDocRef = doc(collection(db, "sharedPlans"), id);
       const snap = await getDoc(planDocRef);
       if (!snap.exists()) {
-        setCollabStatus("not-found");
+        // setCollabStatus("not-found");
         return;
       }
       const dataSnap = snap.data();
       if (dataSnap?.tours) setTour(mapToArray(dataSnap.tours));
       // load metadata
-      if (dataSnap?.title) setPlanTitle(dataSnap.title);
+      // if (dataSnap?.title) setPlanTitle(dataSnap.title);
       setSharedPlanId(id);
       setIsCollaborating(true);
-      setCollabStatus("joined");
+      // setCollabStatus("joined");
       subscribeToPlan(id);
       // add presence doc
       try {
@@ -193,30 +193,30 @@ export default function PlanTrip({ searchQuery = "" }) {
       }
     } catch (err) {
       console.error("joinSharedPlan error:", err);
-      setCollabStatus("error");
+      // setCollabStatus("error");
     }
   };
 
-  const leaveSharedPlan = () => {
-    // unsubscribe all
-    if (unsubscribeRef.current.planUnsub) unsubscribeRef.current.planUnsub();
-    if (unsubscribeRef.current.locksUnsub) unsubscribeRef.current.locksUnsub();
-    if (unsubscribeRef.current.presenceUnsub) unsubscribeRef.current.presenceUnsub();
-    unsubscribeRef.current = {};
-    // clear presence interval
-    if (presenceIntervalRef.current) {
-      clearInterval(presenceIntervalRef.current);
-      presenceIntervalRef.current = null;
-    }
-    // remove presence doc
-    if (sharedPlanId && uid) {
-      const presenceDocRef = doc(collection(db, "sharedPlans", sharedPlanId, "presence"), uid);
-      deleteDoc(presenceDocRef).catch(() => {});
-    }
-    setIsCollaborating(false);
-    setCollabStatus("left");
-    setSharedPlanId("");
-  };
+  // const leaveSharedPlan = () => {
+  //   // unsubscribe all
+  //   if (unsubscribeRef.current.planUnsub) unsubscribeRef.current.planUnsub();
+  //   if (unsubscribeRef.current.locksUnsub) unsubscribeRef.current.locksUnsub();
+  //   if (unsubscribeRef.current.presenceUnsub) unsubscribeRef.current.presenceUnsub();
+  //   unsubscribeRef.current = {};
+  //   // clear presence interval
+  //   if (presenceIntervalRef.current) {
+  //     clearInterval(presenceIntervalRef.current);
+  //     presenceIntervalRef.current = null;
+  //   }
+  //   // remove presence doc
+  //   if (sharedPlanId && uid) {
+  //     const presenceDocRef = doc(collection(db, "sharedPlans", sharedPlanId, "presence"), uid);
+  //     deleteDoc(presenceDocRef).catch(() => {});
+  //   }
+  //   setIsCollaborating(false);
+  //   setCollabStatus("left");
+  //   setSharedPlanId("");
+  // };
 
   // Subscribe to real-time updates for a shared plan
   const subscribeToPlan = (id) => {
@@ -241,15 +241,15 @@ export default function PlanTrip({ searchQuery = "" }) {
               return prev;
             });
           }
-          if (dataSnap?.title) setPlanTitle(dataSnap.title);
-          setCollabStatus("synced");
+          // if (dataSnap?.title) setPlanTitle(dataSnap.title);
+          // setCollabStatus("synced");
         } else {
-          setCollabStatus("deleted");
+          // setCollabStatus("deleted");
         }
       },
       (err) => {
         console.error("onSnapshot error:", err);
-        setCollabStatus("error");
+        // setCollabStatus("error");
       }
     );
 
@@ -273,20 +273,20 @@ export default function PlanTrip({ searchQuery = "" }) {
   };
 
   // Persist a full save to Firestore (useful for manual save button)
-  const saveSharedPlan = async () => {
-    if (!isCollaborating || !sharedPlanId) return;
-    try {
-      const planDoc = doc(collection(db, "sharedPlans"), sharedPlanId);
-      await updateDoc(planDoc, {
-        tours: arrayToMap(tour),
-        updatedAt: serverTimestamp(),
-      });
-      setCollabStatus("saved");
-    } catch (err) {
-      console.error("saveSharedPlan error:", err);
-      setCollabStatus("error");
-    }
-  };
+  // const saveSharedPlan = async () => {
+  //   if (!isCollaborating || !sharedPlanId) return;
+  //   try {
+  //     const planDoc = doc(collection(db, "sharedPlans"), sharedPlanId);
+  //     await updateDoc(planDoc, {
+  //       tours: arrayToMap(tour),
+  //       updatedAt: serverTimestamp(),
+  //     });
+  //     setCollabStatus("saved");
+  //   } catch (err) {
+  //     console.error("saveSharedPlan error:", err);
+  //     setCollabStatus("error");
+  //   }
+  // };
 
   // Auto-save (debounced) whenever the local `tour` changes while collaborating.
   useEffect(() => {
@@ -299,10 +299,10 @@ export default function PlanTrip({ searchQuery = "" }) {
           tours: arrayToMap(tour),
           updatedAt: serverTimestamp(),
         });
-        setCollabStatus("autosaved");
+        // setCollabStatus("autosaved");
       } catch (err) {
         console.error("autosave error:", err);
-        setCollabStatus("error");
+        // setCollabStatus("error");
       }
     }, 700);
 
@@ -513,7 +513,7 @@ export default function PlanTrip({ searchQuery = "" }) {
   </div>
 </div>
 
-        {/* Collaboration Controls */}
+        {/* Collaboration Controls
         <div className="mt-4 mb-8 flex flex-col md:flex-row items-center gap-3">
           <input
             type="text"
@@ -570,7 +570,7 @@ export default function PlanTrip({ searchQuery = "" }) {
               </>
             )}
           </div>
-        </div>
+        </div> */}
 
        
 

@@ -118,6 +118,7 @@ function App() {
                   </PageTransition>
                 }
               />
+              <Route path="/plan-trip" element={<PlanTrip />} />
 
               {/* Auth Pages */}
               <Route

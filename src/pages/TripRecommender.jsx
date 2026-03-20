@@ -3,8 +3,8 @@ import { FaGlobeAsia, FaSearch, FaCompass, FaCalendarAlt, FaMapMarkerAlt, FaSpin
 import { useTheme } from "../contexts/ThemeContext";
 import data from "../data";
 import axios from "axios";
-import { io } from "socket.io-client";
-const socket = io("http://localhost:5000");
+// import { io } from "socket.io-client";
+// const socket = io("http://localhost:5000");
 
 export default function TripRecommender() {
   const { theme } = useTheme();
@@ -116,7 +116,7 @@ export default function TripRecommender() {
       });
       setRecommendations(filtered.slice(0, 6));
       // Emit trip update to other users
-      socket.emit("trip:update", { mood, purpose, theme });
+      // socket.emit("trip:update", { mood, purpose, theme });
     },
     [selectedMood, selectedPurpose, selectedTheme]
   );
@@ -124,14 +124,14 @@ export default function TripRecommender() {
   useEffect(() => {
     window.scrollTo(0, 0);
     // Listen for trip updates from other users
-    socket.on("trip:update", ({ mood, purpose, theme }) => {
-      setSelectedMood(mood);
-      setSelectedPurpose(purpose);
-      setSelectedTheme(theme);
-      handleFilter(mood, purpose, theme);
-    });
+    // socket.on("trip:update", ({ mood, purpose, theme }) => {
+    //   setSelectedMood(mood);
+    //   setSelectedPurpose(purpose);
+    //   setSelectedTheme(theme);
+    //   handleFilter(mood, purpose, theme);
+    // });
     return () => {
-      socket.off("trip:update");
+      // socket.off("trip:update");
     };
   }, [handleFilter]);
 

@@ -6,7 +6,7 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
 import { createServer } from "http";
-import { Server } from "socket.io";
+// import { Server } from "socket.io";
 import { getAIRecommendations } from './services/APIService.js';
 import mongoose from 'mongoose';
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -75,7 +75,7 @@ app.get("/api/status", (req, res) => {
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   try {
-    const travelPrompt = `You are an AI Travel Assistant for a trip planning application. Provide helpful, accurate, and engaging travel advice. User question: ${message}`;
+    const travelPrompt = `You are an AI Travel Assistant for a trip planning application. Provide helpful, accurate, and engaging travel in short only. User question: ${message}`;
     const result = await model.generateContent(travelPrompt);
     const reply = await result.response.text();
 
@@ -161,22 +161,22 @@ app.delete("/api/blogs/:id", (req, res) => {
   });
 });
 
-io.on('connection', (socket) => {
-  console.log('🔌 Client connected:', socket.id);
+// io.on('connection', (socket) => {
+//   console.log('🔌 Client connected:', socket.id);
   
-  socket.on('trip:update', (data) => {
-    console.log('📡 Trip update received:', data);
-    socket.broadcast.emit('trip:update', data);
-  });
+//   socket.on('trip:update', (data) => {
+//     console.log('📡 Trip update received:', data);
+//     socket.broadcast.emit('trip:update', data);
+//   });
   
-  socket.on('disconnect', () => {
-    console.log('🔌 Client disconnected:', socket.id);
-  });
-});
+//   socket.on('disconnect', () => {
+//     console.log('🔌 Client disconnected:', socket.id);
+//   });
+// });
 
 server.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
-  console.log(`🔌 Socket.io enabled`);
+  // console.log(`🔌 Socket.io enabled`);
   console.log(`🤖 AI Model: gemini-2.5-flash`);
   console.log(`🗄️  Database: ${mongoose.connection.readyState === 1 ? 'Connected' : 'Connecting...'}`);
 });
